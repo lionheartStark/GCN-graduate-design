@@ -324,8 +324,6 @@ if __name__ == "__main__":
 
         print(i[0])
         tag, conv1, conv2, useskip = i
-        if tag == "GCN_GCN":
-            continue
         tag = tag + "_skip" + str(useskip)
         model = GCN2layer(NUM_FEAT, [100], conv1, conv2, use_skip=useskip)
         model.to(device)
