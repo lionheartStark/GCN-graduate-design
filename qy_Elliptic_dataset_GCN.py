@@ -317,19 +317,22 @@ if __name__ == "__main__":
     # In[ ]:
     # GCNN = EGCNO
     NUM_NODES, NUM_FEAT, train_loader, test_loader = make_data()
-    epoches = 100
+    epoches = 1000
     print(f"make_data ok!!!, epoches = {epoches}")
     for i in [("GCN_GCN", GCNConv, GCNConv, True), ("GAT_GAT", GATConv, GATConv, True),
               ("GCN_GAT", GCNConv, GATConv, True), ("GAT_GCN", GATConv, GCNConv, True)]:
+
         print(i[0])
         tag, conv1, conv2, useskip = i
+        if tag == "GCN_GCN":
+            continue
         tag = tag + "_skip" + str(useskip)
         model = GCN2layer(NUM_FEAT, [100], conv1, conv2, use_skip=useskip)
         model.to(device)
         lossf = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.9, 0.1]).to(device))
         tain_model(train_loader, test_loader, model, lossf, epoches=epoches, tag=tag)
         torch.save(model.state_dict(), f'model_{tag}.pkl')
-        break
+        # break
         # 加载
         # model = torch.load(f'\model_{tag}.pkl')
         # model.load_state_dict(torch.load('\parameter.pkl'))
