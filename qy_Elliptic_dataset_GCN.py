@@ -28,14 +28,16 @@ import pandas as pd
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
-
+import pickle
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Embedding
 from torch.nn import Parameter
 from torch_geometric.data import Data, DataLoader
-from torch_geometric.nn import GCNConv
+from torch_geometric.nn import GCNConv, GATConv
+from torch_geometric_temporal.nn.recurrent import EvolveGCNO
+
 from torch_geometric.utils.convert import to_networkx
 from torch_geometric.utils import to_undirected
 
@@ -51,6 +53,7 @@ use_dev = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(use_dev)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 # # **Please insert Kaggle username and kaggle key**
 
@@ -69,124 +72,137 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # In[ ]:
 
 
-# Load Dataframe
-df_edge = pd.read_csv('elliptic_bitcoin_dataset/elliptic_txs_edgelist.csv')
-df_class = pd.read_csv('elliptic_bitcoin_dataset/elliptic_txs_classes.csv')
-df_features = pd.read_csv('elliptic_bitcoin_dataset/elliptic_txs_features.csv', header=None)
+def make_data(tag="mkdat"):
+    if os.path.exists('dat_' + f'{tag}'):
+        with open('dat_' + f'{tag}', "rb") as f:
+            ALL_DATA = pickle.load(f)
+        return ALL_DATA
 
-# Setting Column name
-df_features.columns = ['id', 'time step'] + [f'trans_feat_{i}' for i in range(93)] + [f'agg_feat_{i}' for i in
-                                                                                      range(72)]
+    # Load Dataframe
+    df_edge = pd.read_csv('elliptic_bitcoin_dataset/elliptic_txs_edgelist.csv')
+    df_class = pd.read_csv('elliptic_bitcoin_dataset/elliptic_txs_classes.csv')
+    df_features = pd.read_csv('elliptic_bitcoin_dataset/elliptic_txs_features.csv', header=None)
 
-print('Number of edges: {}'.format(len(df_edge)))
+    # Setting Column name
+    df_features.columns = ['id', 'time step'] + [f'trans_feat_{i}' for i in range(93)] + [f'agg_feat_{i}' for i in
+                                                                                          range(72)]
 
-# ## Get Node Index
+    print('Number of edges: {}'.format(len(df_edge)))
 
-# In[ ]:
+    # ## Get Node Index
 
+    # In[ ]:
 
-all_nodes = list(
-    set(df_edge['txId1']).union(set(df_edge['txId2'])).union(set(df_class['txId'])).union(set(df_features['id'])))
-nodes_df = pd.DataFrame(all_nodes, columns=['id']).reset_index()
-NUM_NODES = len(nodes_df)
-print('Number of nodes: {}'.format(NUM_NODES))
-NUM_FEAT = 166
-# ## Fix id index
+    all_nodes = list(
+        set(df_edge['txId1']).union(set(df_edge['txId2'])).union(set(df_class['txId'])).union(set(df_features['id'])))
+    nodes_df = pd.DataFrame(all_nodes, columns=['id']).reset_index()
+    NUM_NODES = len(nodes_df)
+    print('Number of nodes: {}'.format(NUM_NODES))
+    NUM_FEAT = 166
+    # ## Fix id index
 
-# In[ ]:
+    # In[ ]:
 
+    df_edge = df_edge.join(nodes_df.rename(columns={'id': 'txId1'}).set_index('txId1'), on='txId1', how='inner').join(
+        nodes_df.rename(columns={'id': 'txId2'}).set_index('txId2'), on='txId2', how='inner', rsuffix='2').drop(
+        columns=['txId1', 'txId2']).rename(columns={'index': 'txId1', 'index2': 'txId2'})
+    df_edge.head()
 
-df_edge = df_edge.join(nodes_df.rename(columns={'id': 'txId1'}).set_index('txId1'), on='txId1', how='inner').join(
-    nodes_df.rename(columns={'id': 'txId2'}).set_index('txId2'), on='txId2', how='inner', rsuffix='2').drop(
-    columns=['txId1', 'txId2']).rename(columns={'index': 'txId1', 'index2': 'txId2'})
-df_edge.head()
+    # In[ ]:
 
-# In[ ]:
+    df_class = df_class.join(nodes_df.rename(columns={'id': 'txId'}).set_index('txId'), on='txId', how='inner').drop(
+        columns=['txId']).rename(columns={'index': 'txId'})[['txId', 'class']]
+    df_class.head()
 
+    # In[ ]:
 
-df_class = df_class.join(nodes_df.rename(columns={'id': 'txId'}).set_index('txId'), on='txId', how='inner').drop(
-    columns=['txId']).rename(columns={'index': 'txId'})[['txId', 'class']]
-df_class.head()
+    df_features = df_features.join(nodes_df.set_index('id'), on='id', how='inner').drop(columns=['id']).rename(
+        columns={'index': 'id'})
+    df_features = df_features[['id'] + list(df_features.drop(columns=['id']).columns)]
+    df_features.head()
 
-# In[ ]:
+    # In[ ]:
 
+    df_edge_time = df_edge.join(df_features[['id', 'time step']].rename(columns={'id': 'txId1'}).set_index('txId1'),
+                                on='txId1', how='left', rsuffix='1').join(
+        df_features[['id', 'time step']].rename(columns={'id': 'txId2'}).set_index('txId2'), on='txId2', how='left',
+        rsuffix='2')
+    df_edge_time['is_time_same'] = df_edge_time['time step'] == df_edge_time['time step2']
+    df_edge_time_fin = df_edge_time[['txId1', 'txId2', 'time step']].rename(
+        columns={'txId1': 'source', 'txId2': 'target', 'time step': 'time'})
 
-df_features = df_features.join(nodes_df.set_index('id'), on='id', how='inner').drop(columns=['id']).rename(
-    columns={'index': 'id'})
-df_features = df_features[['id'] + list(df_features.drop(columns=['id']).columns)]
-df_features.head()
+    # ## Create csv from Dataframe
 
-# In[ ]:
+    # In[ ]:
 
+    df_features.drop(columns=['time step']).to_csv('elliptic_bitcoin_dataset_cont/elliptic_txs_features.csv',
+                                                   index=False,
+                                                   header=None)
+    df_class.rename(columns={'txId': 'nid', 'class': 'label'})[['nid', 'label']].sort_values(by='nid').to_csv(
+        'elliptic_bitcoin_dataset_cont/elliptic_txs_classes.csv', index=False, header=None)
+    df_features[['id', 'time step']].rename(columns={'id': 'nid', 'time step': 'time'})[['nid', 'time']].sort_values(
+        by='nid').to_csv('elliptic_bitcoin_dataset_cont/elliptic_txs_nodetime.csv', index=False, header=None)
+    df_edge_time_fin[['source', 'target', 'time']].to_csv(
+        'elliptic_bitcoin_dataset_cont/elliptic_txs_edgelist_timed.csv',
+        index=False, header=None)
 
-df_edge_time = df_edge.join(df_features[['id', 'time step']].rename(columns={'id': 'txId1'}).set_index('txId1'),
-                            on='txId1', how='left', rsuffix='1').join(
-    df_features[['id', 'time step']].rename(columns={'id': 'txId2'}).set_index('txId2'), on='txId2', how='left',
-    rsuffix='2')
-df_edge_time['is_time_same'] = df_edge_time['time step'] == df_edge_time['time step2']
-df_edge_time_fin = df_edge_time[['txId1', 'txId2', 'time step']].rename(
-    columns={'txId1': 'source', 'txId2': 'target', 'time step': 'time'})
+    # ## Graph Preprocessing
 
-# ## Create csv from Dataframe
+    # In[ ]:
 
-# In[ ]:
+    node_label = df_class.rename(columns={'txId': 'nid', 'class': 'label'})[['nid', 'label']].sort_values(
+        by='nid').merge(
+        df_features[['id', 'time step']].rename(columns={'id': 'nid', 'time step': 'time'}), on='nid', how='left')
+    node_label['label'] = node_label['label'].apply(lambda x: '3' if x == 'unknown' else x).astype(int) - 1
+    node_label.head()
 
+    # In[ ]:
 
-df_features.drop(columns=['time step']).to_csv('elliptic_bitcoin_dataset_cont/elliptic_txs_features.csv', index=False,
-                                               header=None)
-df_class.rename(columns={'txId': 'nid', 'class': 'label'})[['nid', 'label']].sort_values(by='nid').to_csv(
-    'elliptic_bitcoin_dataset_cont/elliptic_txs_classes.csv', index=False, header=None)
-df_features[['id', 'time step']].rename(columns={'id': 'nid', 'time step': 'time'})[['nid', 'time']].sort_values(
-    by='nid').to_csv('elliptic_bitcoin_dataset_cont/elliptic_txs_nodetime.csv', index=False, header=None)
-df_edge_time_fin[['source', 'target', 'time']].to_csv('elliptic_bitcoin_dataset_cont/elliptic_txs_edgelist_timed.csv',
-                                                      index=False, header=None)
+    merged_nodes_df = node_label.merge(
+        df_features.rename(columns={'id': 'nid', 'time step': 'time'}).drop(columns=['time']), on='nid', how='left')
+    merged_nodes_df.head()
 
-# ## Graph Preprocessing
+    # In[ ]:
 
-# In[ ]:
+    train_dataset = []
+    test_dataset = []
+    test_dataset2 = []
+    for i in range(49):
+        nodes_df_tmp = merged_nodes_df[merged_nodes_df['time'] == i + 1].reset_index()
+        nodes_df_tmp['index'] = nodes_df_tmp.index
+        df_edge_tmp = df_edge_time_fin.join(
+            nodes_df_tmp.rename(columns={'nid': 'source'})[['source', 'index']].set_index('source'), on='source',
+            how='inner').join(nodes_df_tmp.rename(columns={'nid': 'target'})[['target', 'index']].set_index('target'),
+                              on='target', how='inner', rsuffix='2').drop(columns=['source', 'target']).rename(
+            columns={'index': 'source', 'index2': 'target'})
+        x = torch.tensor(np.array(nodes_df_tmp.sort_values(by='index').drop(columns=['index', 'nid', 'label'])),
+                         dtype=torch.float)
+        edge_index = torch.tensor(np.array(df_edge_tmp[['source', 'target']]).T, dtype=torch.long)
+        edge_index = to_undirected(edge_index)
+        mask = nodes_df_tmp['label'] != 2
+        y = torch.tensor(np.array(nodes_df_tmp['label']))
+        # 划分测试集
+        if i + 1 < 35:
+            data = Data(x=x, edge_index=edge_index, train_mask=mask, y=y)
+            train_dataset.append(data)
+        else:
+            data = Data(x=x, edge_index=edge_index, test_mask=mask, y=y)
+            test_dataset.append(data)
+        # elif i+1 < 35+5:
+        #     data = Data(x=x, edge_index=edge_index, test_mask=mask, y=y)
+        #     test_dataset.append(data)
+        # else:
+        #     data = Data(x=x, edge_index=edge_index, test_mask=mask, y=y)
+        #     test_dataset2.append(data)
 
-
-node_label = df_class.rename(columns={'txId': 'nid', 'class': 'label'})[['nid', 'label']].sort_values(by='nid').merge(
-    df_features[['id', 'time step']].rename(columns={'id': 'nid', 'time step': 'time'}), on='nid', how='left')
-node_label['label'] = node_label['label'].apply(lambda x: '3' if x == 'unknown' else x).astype(int) - 1
-node_label.head()
-
-# In[ ]:
-
-
-merged_nodes_df = node_label.merge(
-    df_features.rename(columns={'id': 'nid', 'time step': 'time'}).drop(columns=['time']), on='nid', how='left')
-merged_nodes_df.head()
-
-# In[ ]:
-
-
-train_dataset = []
-test_dataset = []
-for i in range(49):
-    nodes_df_tmp = merged_nodes_df[merged_nodes_df['time'] == i + 1].reset_index()
-    nodes_df_tmp['index'] = nodes_df_tmp.index
-    df_edge_tmp = df_edge_time_fin.join(
-        nodes_df_tmp.rename(columns={'nid': 'source'})[['source', 'index']].set_index('source'), on='source',
-        how='inner').join(nodes_df_tmp.rename(columns={'nid': 'target'})[['target', 'index']].set_index('target'),
-                          on='target', how='inner', rsuffix='2').drop(columns=['source', 'target']).rename(
-        columns={'index': 'source', 'index2': 'target'})
-    x = torch.tensor(np.array(nodes_df_tmp.sort_values(by='index').drop(columns=['index', 'nid', 'label'])),
-                     dtype=torch.float)
-    edge_index = torch.tensor(np.array(df_edge_tmp[['source', 'target']]).T, dtype=torch.long)
-    edge_index = to_undirected(edge_index)
-    mask = nodes_df_tmp['label'] != 2
-    y = torch.tensor(np.array(nodes_df_tmp['label']))
-
-    if i + 1 < 35:
-        data = Data(x=x, edge_index=edge_index, train_mask=mask, y=y)
-        train_dataset.append(data)
-    else:
-        data = Data(x=x, edge_index=edge_index, test_mask=mask, y=y)
-        test_dataset.append(data)
-
-train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+    #test_loader2 = DataLoader(test_dataset2, batch_size=1, shuffle=False)
+    ALL_DATA = [NUM_NODES, NUM_FEAT, train_loader, test_loader]
+    pickle.dump(ALL_DATA, open('dat_' + f'{tag}', 'wb'))
+    with open('dat_' + f'{tag}', "rb") as f:
+        ALL_DATA = pickle.load(f)
+    return ALL_DATA
 
 
 # ## Model
@@ -202,10 +218,10 @@ test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
 # In[ ]:
 
-def tain_model(model, use_criterion):
+def tain_model(train_loader, test_loader, model, use_criterion, epoches=1000, tag=""):
     patience = 50
     lr = 0.001
-    epoches = 1000
+    epoches = epoches
 
     # In[ ]:
 
@@ -220,7 +236,8 @@ def tain_model(model, use_criterion):
     precisions = []
     recalls = []
     iterations = []
-
+    logf = f"log_{tag}"
+    all_logstr=""
     for epoch in range(epoches):
 
         model.train()
@@ -235,7 +252,7 @@ def tain_model(model, use_criterion):
             train_loss += loss.item() * data.num_graphs
             optimizer.step()
         train_loss /= len(train_loader.dataset)
-
+        # 评估验证集
         if (epoch + 1) % 50 == 0:
             model.eval()
             ys, preds = [], []
@@ -263,28 +280,57 @@ def tain_model(model, use_criterion):
             accuracies.append(mf1)
             precisions.append(precision[0])
             recalls.append(recall[0])
-
-            print(
-                'Epoch: {:02d}, Train_Loss: {:.4f}, Val_Loss: {:.4f}, Precision: {:.4f}, Recall: {:.4f}, Illicit f1: {:.4f}, F1: {:.4f}'.format(
-                    epoch + 1, train_loss, val_loss, precision[0], recall[0], f1[0], mf1) + "\n" +
-                f'T class precision: {precision[1]}, recall: {recall[1]}, f1: {f1[1]}'
+            log_str = 'Epoch: {:02d}, Train_Loss: {:.4f}, Val_Loss: {:.4f}, Precision: {:.4f}, Recall: {:.4f}, Illicit f1: {:.4f}, mF1: {:.4f}'.format(
+                    epoch + 1, train_loss, val_loss, precision[0], recall[0], f1[0], mf1) + "\n" +\
+                f'T class precision: {precision[1]}, recall: {recall[1]}, f1: {f1[1]}\n'
+            print(log_str
             )
+            all_logstr+=log_str
+
     # In[ ]:
+    with open(logf, "w+") as f:
+        f.write(all_logstr)
 
     a, b, c, d = train_losses, val_losses, if1, accuracies
-    plt.plot(np.array(a), 'r', label='Train loss')
-    plt.plot(np.array(b), 'g', label='Valid loss')
-    plt.plot(np.array(c), 'black', label='Illicit F1')
-    plt.plot(np.array(d), 'orange', label='F1')
+
+    import pickle
+
+    g = [a, b, c, d]
+    pickle.dump(g, open('res_' + f'{tag}', 'wb'))
+    with open('res_' + f'{tag}', "rb") as f:
+        g = pickle.load(f)
+    a, b, c, d = g
+
+    ep = [i for i in range(patience, epoches + 1, patience)]
+    plt.figure()
+    plt.plot(np.array(ep), np.array(a), 'r', label='Train loss')
+    plt.plot(np.array(ep), np.array(b), 'g', label='Valid loss')
+    plt.plot(np.array(ep), np.array(c), 'black', label='Illicit F1')
+    plt.plot(np.array(ep), np.array(d), 'orange', label='mF1')
+    plt.legend(['Train loss', 'Valid loss', 'Illicit F1', 'mF1'])
     plt.ylim([0, 1.0])
-    plt.show()
+    plt.xlim([patience, epoches])
+    plt.savefig(f"pic_{tag}.png")
 
 
-# In[ ]:
-GCN = GCN2layer
-GCN = EGCNO
+if __name__ == "__main__":
+    # In[ ]:
+    # GCNN = EGCNO
+    NUM_NODES, NUM_FEAT, train_loader, test_loader = make_data()
+    epoches = 100
+    print(f"make_data ok!!!, epoches = {epoches}")
+    for i in [("GCN_GCN", GCNConv, GCNConv, True), ("GAT_GAT", GATConv, GATConv, True),
+              ("GCN_GAT", GCNConv, GATConv, True), ("GAT_GCN", GATConv, GCNConv, True)]:
+        print(i[0])
+        tag, conv1, conv2, useskip = i
+        tag = tag + "_skip" + str(useskip)
+        model = GCN2layer(NUM_FEAT, [100], conv1, conv2, use_skip=useskip)
+        model.to(device)
+        lossf = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.9, 0.1]).to(device))
+        tain_model(train_loader, test_loader, model, lossf, epoches=epoches, tag=tag)
+        torch.save(model.state_dict(), f'model_{tag}.pkl')
+        break
+        # 加载
+        # model = torch.load(f'\model_{tag}.pkl')
+        # model.load_state_dict(torch.load('\parameter.pkl'))
 
-model = GCN(NUM_NODES, NUM_FEAT, 2)
-model.to(device)
-lossf = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.99, 0.01]).to(device))
-tain_model(model, lossf)

@@ -1,12 +1,12 @@
-Epoch: 50, Train_Loss: 0.4127, Val_Loss: 0.5238, Precision: 0.0746, Recall: 0.9908, Illicit f1: 0.1387, F1: 0.2008
-T class precision: 0.9956217162872154, recall: 0.14589080644126515, f1: 0.25449051536008055
-Epoch: 100, Train_Loss: 0.3878, Val_Loss: 0.5674, Precision: 0.0981, Recall: 0.9621, Illicit f1: 0.1781, F1: 0.4232
-T class precision: 0.993226499256567, recall: 0.3857060370821839, f1: 0.555637707948244
-Epoch: 150, Train_Loss: 0.3898, Val_Loss: 0.5334, Precision: 0.0854, Recall: 0.9834, Illicit f1: 0.1572, F1: 0.3149
-T class precision: 0.9957163255592575, recall: 0.2684288188875345, f1: 0.42286118550709995
-Epoch: 200, Train_Loss: 0.3824, Val_Loss: 0.5605, Precision: 0.0954, Recall: 0.9649, Illicit f1: 0.1737, F1: 0.4034
-T class precision: 0.9933543196922001, recall: 0.364406235965869, f1: 0.5332081670969256
-Epoch: 250, Train_Loss: 0.3862, Val_Loss: 0.5629, Precision: 0.0962, Recall: 0.9621, Illicit f1: 0.1749, F1: 0.4104
-T class precision: 0.9929806539976032, recall: 0.3721049592609226, f1: 0.5413477692738472
-
-Process finished with exit code -1
+C:\Users\10031\PycharmProjects\GCN_Elliptic_dataset\venv\Scripts\python.exe C:/Users/10031/PycharmProjects/GCN_Elliptic_dataset/qy_Elliptic_dataset_GCN.py
+cuda
+Number of edges: 234355
+Number of nodes: 203769
+Epoch: 50, Train_Loss: 0.5982, Val_Loss: 0.5578, Precision: 0.2240, Recall: 0.1154, Illicit f1: 0.1523, mF1: 0.9166
+T class precision: 0.9405412115193644, recall: 0.9722204401103484, f1: 0.9561184895422569
+Epoch: 100, Train_Loss: 0.5856, Val_Loss: 0.5613, Precision: 0.2206, Recall: 0.1542, Illicit f1: 0.1815, mF1: 0.9097
+T class precision: 0.9424370011939923, recall: 0.9621479437993199, f1: 0.952190476190476
+Epoch: 150, Train_Loss: 0.5859, Val_Loss: 0.5633, Precision: 0.2166, Recall: 0.1616, Illicit f1: 0.1851, mF1: 0.9076
+T class precision: 0.9427562728533603, recall: 0.9593892346185924, f1: 0.9510000317975135
+Epoch: 200, Train_Loss: 0.5852, Val_Loss: 0.5670, Precision: 0.2179, Recall: 0.1570, Illicit f1: 0.1825, mF1: 0.9086
+T class precision: 0.9425424795468849, recall: 0.9608648232501443, f1: 0.9516154652603487

@@ -1,26 +1,46 @@
-C:\Users\10031\PycharmProjects\GCN_Elliptic_dataset\venv\Scripts\python.exe C:/Users/10031/PycharmProjects/GCN_Elliptic_dataset/Elliptic_dataset_GCN.py
+C:\Users\10031\PycharmProjects\GCN_Elliptic_dataset\venv\Scripts\python.exe C:/Users/10031/PycharmProjects/GCN_Elliptic_dataset/qy_Elliptic_dataset_GCN.py
 cuda
 Number of edges: 234355
 Number of nodes: 203769
-Epoch: 50, Train_Loss: 0.3851, Val_Loss: 0.4023, Precision: 0.7870, Recall: 0.4811, Illicit f1: 0.5971, F1: 0.9578
-Epoch: 100, Train_Loss: 0.3722, Val_Loss: 0.3995, Precision: 0.7599, Recall: 0.5143, Illicit f1: 0.6134, F1: 0.9579
-Epoch: 150, Train_Loss: 0.3660, Val_Loss: 0.4001, Precision: 0.7885, Recall: 0.4958, Illicit f1: 0.6088, F1: 0.9586
-Epoch: 200, Train_Loss: 0.3618, Val_Loss: 0.4045, Precision: 0.8437, Recall: 0.4386, Illicit f1: 0.5772, F1: 0.9582
-Epoch: 250, Train_Loss: 0.3592, Val_Loss: 0.3999, Precision: 0.7953, Recall: 0.4986, Illicit f1: 0.6129, F1: 0.9591
-Epoch: 300, Train_Loss: 0.3557, Val_Loss: 0.4013, Precision: 0.8220, Recall: 0.4820, Illicit f1: 0.6077, F1: 0.9596
-Epoch: 350, Train_Loss: 0.3560, Val_Loss: 0.3979, Precision: 0.7963, Recall: 0.5125, Illicit f1: 0.6236, F1: 0.9598
-Epoch: 400, Train_Loss: 0.3536, Val_Loss: 0.3979, Precision: 0.8414, Recall: 0.4995, Illicit f1: 0.6269, F1: 0.9614
-Epoch: 450, Train_Loss: 0.3528, Val_Loss: 0.3986, Precision: 0.8401, Recall: 0.4949, Illicit f1: 0.6229, F1: 0.9611
-Epoch: 500, Train_Loss: 0.3517, Val_Loss: 0.3991, Precision: 0.8619, Recall: 0.4783, Illicit f1: 0.6152, F1: 0.9611
-Epoch: 550, Train_Loss: 0.3512, Val_Loss: 0.4025, Precision: 0.8668, Recall: 0.4506, Illicit f1: 0.5930, F1: 0.9598
-Epoch: 600, Train_Loss: 0.3506, Val_Loss: 0.4058, Precision: 0.8854, Recall: 0.4211, Illicit f1: 0.5707, F1: 0.9588
-Epoch: 650, Train_Loss: 0.3497, Val_Loss: 0.4041, Precision: 0.8853, Recall: 0.4349, Illicit f1: 0.5833, F1: 0.9596
-Epoch: 700, Train_Loss: 0.3489, Val_Loss: 0.4036, Precision: 0.8707, Recall: 0.4414, Illicit f1: 0.5858, F1: 0.9594
-Epoch: 750, Train_Loss: 0.3487, Val_Loss: 0.4013, Precision: 0.8418, Recall: 0.4765, Illicit f1: 0.6085, F1: 0.9602
-Epoch: 800, Train_Loss: 0.3485, Val_Loss: 0.4008, Precision: 0.8576, Recall: 0.4728, Illicit f1: 0.6095, F1: 0.9606
-Epoch: 850, Train_Loss: 0.3482, Val_Loss: 0.4070, Precision: 0.9081, Recall: 0.4017, Illicit f1: 0.5570, F1: 0.9585
-Epoch: 900, Train_Loss: 0.3475, Val_Loss: 0.4033, Precision: 0.8945, Recall: 0.4386, Illicit f1: 0.5886, F1: 0.9602
-Epoch: 950, Train_Loss: 0.3474, Val_Loss: 0.4005, Precision: 0.8808, Recall: 0.4709, Illicit f1: 0.6137, F1: 0.9615
-Epoch: 1000, Train_Loss: 0.3475, Val_Loss: 0.4056, Precision: 0.8816, Recall: 0.4331, Illicit f1: 0.5808, F1: 0.9594
+Epoch: 50, Train_Loss: 0.5967, Val_Loss: 0.5771, Precision: 0.2336, Recall: 0.0886, Illicit f1: 0.1285, mF1: 0.9219
+T class precision: 0.9392951596039116, recall: 0.9797908513504844, f1: 0.9591157445205049
+Epoch: 100, Train_Loss: 0.5878, Val_Loss: 0.5808, Precision: 0.2264, Recall: 0.1154, Illicit f1: 0.1529, mF1: 0.9169
+T class precision: 0.9405633453282045, recall: 0.972605376275101, f1: 0.9563160384797351
+Epoch: 150, Train_Loss: 0.5859, Val_Loss: 0.5703, Precision: 0.2249, Recall: 0.1468, Illicit f1: 0.1777, mF1: 0.9117
+T class precision: 0.9421161435820334, recall: 0.9648424969525887, f1: 0.9533438985736925
+Epoch: 200, Train_Loss: 0.5891, Val_Loss: 0.5978, Precision: 0.2299, Recall: 0.1136, Illicit f1: 0.1520, mF1: 0.9177
+T class precision: 0.9405020142547258, recall: 0.9735677166869827, f1: 0.9567492591892062
+Epoch: 250, Train_Loss: 0.5876, Val_Loss: 0.5681, Precision: 0.2200, Recall: 0.1542, Illicit f1: 0.1813, mF1: 0.9095
+T class precision: 0.9424297655709887, recall: 0.9620196317444024, f1: 0.9521239443774209
+Epoch: 300, Train_Loss: 0.5879, Val_Loss: 0.5945, Precision: 0.2264, Recall: 0.1154, Illicit f1: 0.1529, mF1: 0.9169
+T class precision: 0.9405633453282045, recall: 0.972605376275101, f1: 0.9563160384797351
+Epoch: 350, Train_Loss: 0.5872, Val_Loss: 0.5633, Precision: 0.2158, Recall: 0.1644, Illicit f1: 0.1866, mF1: 0.9069
+T class precision: 0.9428841905964026, recall: 0.9584910502341695, f1: 0.9506235683379993
+Epoch: 400, Train_Loss: 0.5880, Val_Loss: 0.5768, Precision: 0.2292, Recall: 0.1422, Illicit f1: 0.1755, mF1: 0.9132
+T class precision: 0.94193024128016, recall: 0.9667671777763521, f1: 0.9541871141364571
+Epoch: 450, Train_Loss: 0.5857, Val_Loss: 0.5623, Precision: 0.2167, Recall: 0.1681, Illicit f1: 0.1893, mF1: 0.9065
+T class precision: 0.9430827542640556, recall: 0.957785333932123, f1: 0.9503771843269567
+Epoch: 500, Train_Loss: 0.5865, Val_Loss: 0.5860, Precision: 0.2231, Recall: 0.1247, Illicit f1: 0.1600, mF1: 0.9149
+T class precision: 0.9409897292250233, recall: 0.9698466670943735, f1: 0.9552003032983698
+Epoch: 550, Train_Loss: 0.5846, Val_Loss: 0.5951, Precision: 0.2269, Recall: 0.1154, Illicit f1: 0.1530, mF1: 0.9170
+T class precision: 0.9405670326943358, recall: 0.9726695323025598, f1: 0.9563489560335582
+Epoch: 600, Train_Loss: 0.5855, Val_Loss: 0.5701, Precision: 0.2204, Recall: 0.1514, Illicit f1: 0.1795, mF1: 0.9101
+T class precision: 0.9422956172296874, recall: 0.9627895040739077, f1: 0.9524323295148035
+Epoch: 650, Train_Loss: 0.5863, Val_Loss: 0.5768, Precision: 0.2284, Recall: 0.1413, Illicit f1: 0.1746, mF1: 0.9132
+T class precision: 0.941875, recall: 0.9668313338038109, f1: 0.9541900148795391
+Epoch: 700, Train_Loss: 0.5864, Val_Loss: 0.5938, Precision: 0.2278, Recall: 0.1182, Illicit f1: 0.1556, mF1: 0.9167
+T class precision: 0.9407126893469083, recall: 0.9721562840828896, f1: 0.9561760530052059
+Epoch: 750, Train_Loss: 0.5863, Val_Loss: 0.5900, Precision: 0.2263, Recall: 0.1210, Illicit f1: 0.1576, mF1: 0.9160
+T class precision: 0.9408364924491952, recall: 0.9712580996984667, f1: 0.9558052907380516
+Epoch: 800, Train_Loss: 0.5869, Val_Loss: 0.5725, Precision: 0.2230, Recall: 0.1468, Illicit f1: 0.1771, mF1: 0.9113
+T class precision: 0.942094378642602, recall: 0.9644575607878361, f1: 0.9531448135937104
+Epoch: 850, Train_Loss: 0.5829, Val_Loss: 0.5708, Precision: 0.2205, Recall: 0.1487, Illicit f1: 0.1776, mF1: 0.9106
+T class precision: 0.9421580928481806, recall: 0.9634952203759544, f1: 0.9527072033495099
+Epoch: 900, Train_Loss: 0.5867, Val_Loss: 0.5899, Precision: 0.2270, Recall: 0.1210, Illicit f1: 0.1578, mF1: 0.9161
+T class precision: 0.9408438451500652, recall: 0.9713864117533842, f1: 0.9558712121212122
+Epoch: 950, Train_Loss: 0.5878, Val_Loss: 0.5810, Precision: 0.2252, Recall: 0.1320, Illicit f1: 0.1665, mF1: 0.9141
+T class precision: 0.9413782351106954, recall: 0.9684352344902803, f1: 0.9547150717854659
+Epoch: 1000, Train_Loss: 0.5871, Val_Loss: 0.5729, Precision: 0.2239, Recall: 0.1468, Illicit f1: 0.1774, mF1: 0.9115
+T class precision: 0.9421052631578948, recall: 0.9646500288702123, f1: 0.9532443655498146
 
 Process finished with exit code 0
