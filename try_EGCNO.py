@@ -31,7 +31,7 @@ def create_mock_target(number_of_nodes, number_of_classes):
 
 
 class RecurrentGCN(torch.nn.Module):
-    def __init__(self, node_count, node_features, num_classes):
+    def __init__(self,  node_features, num_classes):
         super(RecurrentGCN, self).__init__()
         self.recurrent_1 = EvolveGCNO(node_features)
         self.recurrent_2 = EvolveGCNO(node_features)

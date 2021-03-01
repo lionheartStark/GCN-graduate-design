@@ -1,0 +1,40 @@
+Epoch: 50, Train_Loss: 0.3726, Val_Loss: 0.5119, Precision: 0.3477, Recall: 0.6334, Illicit f1: 0.4490, mF1: 0.8990
+T class precision: 0.9729876845614751, recall: 0.9174311926605505, f1: 0.9443930788535201
+Epoch: 100, Train_Loss: 0.3547, Val_Loss: 0.5016, Precision: 0.6440, Recall: 0.5780, Illicit f1: 0.6092, mF1: 0.9518
+T class precision: 0.9708880112116193, recall: 0.9778020144992622, f1: 0.9743327473229981
+Epoch: 150, Train_Loss: 0.3447, Val_Loss: 0.5030, Precision: 0.7285, Recall: 0.5623, Illicit f1: 0.6347, mF1: 0.9579
+T class precision: 0.9700644183402805, recall: 0.985436581766857, f1: 0.9776900798828809
+Epoch: 200, Train_Loss: 0.3413, Val_Loss: 0.5009, Precision: 0.7464, Recall: 0.5706, Illicit f1: 0.6468, mF1: 0.9595
+T class precision: 0.9706476454993056, recall: 0.9865272342336563, f1: 0.9785230201406345
+Epoch: 250, Train_Loss: 0.3381, Val_Loss: 0.4981, Precision: 0.7709, Recall: 0.5780, Illicit f1: 0.6607, mF1: 0.9614
+T class precision: 0.9711817379240761, recall: 0.9880669788926669, f1: 0.9795515980283034
+Epoch: 300, Train_Loss: 0.3354, Val_Loss: 0.4897, Precision: 0.7356, Recall: 0.6113, Illicit f1: 0.6677, mF1: 0.9605
+T class precision: 0.9733037412809131, recall: 0.9847308654648104, f1: 0.9789839589246421
+Epoch: 350, Train_Loss: 0.3331, Val_Loss: 0.4886, Precision: 0.7563, Recall: 0.6131, Illicit f1: 0.6772, mF1: 0.9620
+T class precision: 0.97346757852077, recall: 0.9862706101238211, f1: 0.9798272730169858
+Epoch: 400, Train_Loss: 0.3325, Val_Loss: 0.4915, Precision: 0.7244, Recall: 0.6066, Illicit f1: 0.6603, mF1: 0.9594
+T class precision: 0.9729746875594747, recall: 0.983960993135305, f1: 0.9784370015948963
+Epoch: 450, Train_Loss: 0.3371, Val_Loss: 0.5007, Precision: 0.8178, Recall: 0.5596, Illicit f1: 0.6645, mF1: 0.9633
+T class precision: 0.9700546173645552, recall: 0.9913389362930647, f1: 0.9805812920421373
+Epoch: 500, Train_Loss: 0.3319, Val_Loss: 0.4904, Precision: 0.7895, Recall: 0.5993, Illicit f1: 0.6814, mF1: 0.9636
+T class precision: 0.9726148409893993, recall: 0.9889010072496311, f1: 0.9806903133449977
+Epoch: 550, Train_Loss: 0.3302, Val_Loss: 0.4951, Precision: 0.8256, Recall: 0.5771, Illicit f1: 0.6793, mF1: 0.9646
+T class precision: 0.9712185005969962, recall: 0.9915314043754411, f1: 0.9812698412698413
+Epoch: 600, Train_Loss: 0.3304, Val_Loss: 0.4968, Precision: 0.8165, Recall: 0.5753, Illicit f1: 0.6750, mF1: 0.9640
+T class precision: 0.9710819136229333, recall: 0.9910181561557708, f1: 0.9809487521432654
+Epoch: 650, Train_Loss: 0.3287, Val_Loss: 0.4944, Precision: 0.7743, Recall: 0.5891, Illicit f1: 0.6691, mF1: 0.9621
+T class precision: 0.9719172030796416, recall: 0.9880669788926669, f1: 0.9799255559443897
+Epoch: 700, Train_Loss: 0.3292, Val_Loss: 0.4946, Precision: 0.6782, Recall: 0.5974, Illicit f1: 0.6352, mF1: 0.9554
+T class precision: 0.9722575719012472, recall: 0.9803040995701546, f1: 0.9762642558221257
+Epoch: 750, Train_Loss: 0.3277, Val_Loss: 0.5028, Precision: 0.8345, Recall: 0.5540, Illicit f1: 0.6659, mF1: 0.9639
+T class precision: 0.9697197667857814, recall: 0.9923654327324052, f1: 0.9809119157841334
+Epoch: 800, Train_Loss: 0.3277, Val_Loss: 0.4964, Precision: 0.7365, Recall: 0.5910, Illicit f1: 0.6557, mF1: 0.9597
+T class precision: 0.9719637997595089, recall: 0.9853082697119394, f1: 0.9785905441570026
+Epoch: 850, Train_Loss: 0.3270, Val_Loss: 0.5098, Precision: 0.8178, Recall: 0.5346, Illicit f1: 0.6466, mF1: 0.9620
+T class precision: 0.9684250093973187, recall: 0.9917238724578175, f1: 0.9799359726140289
+Epoch: 900, Train_Loss: 0.3265, Val_Loss: 0.5009, Precision: 0.7990, Recall: 0.5651, Illicit f1: 0.6620, mF1: 0.9625
+T class precision: 0.9703848088531187, recall: 0.9901199717713479, f1: 0.9801530596043314
+Epoch: 950, Train_Loss: 0.3260, Val_Loss: 0.5039, Precision: 0.8182, Recall: 0.5568, Illicit f1: 0.6626, mF1: 0.9632
+T class precision: 0.9698738467331952, recall: 0.9914030923205235, f1: 0.980520304568528
+Epoch: 1000, Train_Loss: 0.3262, Val_Loss: 0.5002, Precision: 0.7805, Recall: 0.5679, Illicit f1: 0.6574, mF1: 0.9615
+T class precision: 0.9705326785039667, recall: 0.9889010072496311, f1: 0.9796307477199784

@@ -43,7 +43,7 @@ from torch_geometric.utils import to_undirected
 
 from modle_GCN2layer import GCN as GCN2layer
 from try_EGCNO import RecurrentGCN as EGCNO
-
+from myevolvegcno import EvolveGCNO
 CHOOSE_MODE = {
     "GCN": GCN2layer,
     "EGCN_H": EGCNO
@@ -315,7 +315,7 @@ def tain_model(train_loader, test_loader, model, use_criterion, epoches=1000, ta
 
 if __name__ == "__main__":
     # In[ ]:
-    # GCNN = EGCNO
+    GCNN = EGCNO
     NUM_NODES, NUM_FEAT, train_loader, test_loader = make_data()
     epoches = 1000
     print(f"make_data ok!!!, epoches = {epoches}")
