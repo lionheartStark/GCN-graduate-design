@@ -44,3 +44,4 @@ Epoch: 1000, Train_Loss: 0.5871, Val_Loss: 0.5729, Precision: 0.2239, Recall: 0.
 T class precision: 0.9421052631578948, recall: 0.9646500288702123, f1: 0.9532443655498146
 
 Process finished with exit code 0
+目前使用了0.2的drop

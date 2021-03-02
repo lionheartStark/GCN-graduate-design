@@ -44,6 +44,7 @@ from torch_geometric.utils import to_undirected
 from modle_GCN2layer import GCN as GCN2layer
 from try_EGCNO import RecurrentGCN as EGCNO
 from myevolvegcno import EvolveGCNO
+
 CHOOSE_MODE = {
     "GCN": GCN2layer,
     "EGCN_H": EGCNO
@@ -197,7 +198,7 @@ def make_data(tag="mkdat"):
 
     train_loader = DataLoader(train_dataset, batch_size=1, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
-    #test_loader2 = DataLoader(test_dataset2, batch_size=1, shuffle=False)
+    # test_loader2 = DataLoader(test_dataset2, batch_size=1, shuffle=False)
     ALL_DATA = [NUM_NODES, NUM_FEAT, train_loader, test_loader]
     pickle.dump(ALL_DATA, open('dat_' + f'{tag}', 'wb'))
     with open('dat_' + f'{tag}', "rb") as f:
@@ -237,11 +238,12 @@ def tain_model(train_loader, test_loader, model, use_criterion, epoches=1000, ta
     recalls = []
     iterations = []
     logf = f"log_{tag}"
-    all_logstr=""
+    all_logstr = ""
     for epoch in range(epoches):
 
         model.train()
         train_loss = 0
+
         for data in train_loader:
             data = data.to(device)
             optimizer.zero_grad()
@@ -281,11 +283,11 @@ def tain_model(train_loader, test_loader, model, use_criterion, epoches=1000, ta
             precisions.append(precision[0])
             recalls.append(recall[0])
             log_str = 'Epoch: {:02d}, Train_Loss: {:.4f}, Val_Loss: {:.4f}, Precision: {:.4f}, Recall: {:.4f}, Illicit f1: {:.4f}, mF1: {:.4f}'.format(
-                    epoch + 1, train_loss, val_loss, precision[0], recall[0], f1[0], mf1) + "\n" +\
-                f'T class precision: {precision[1]}, recall: {recall[1]}, f1: {f1[1]}\n'
+                epoch + 1, train_loss, val_loss, precision[0], recall[0], f1[0], mf1) + "\n" + \
+                      f'T class precision: {precision[1]}, recall: {recall[1]}, f1: {f1[1]}\n'
             print(log_str
-            )
-            all_logstr+=log_str
+                  )
+            all_logstr += log_str
 
     # In[ ]:
     with open(logf, "w+") as f:
@@ -319,21 +321,18 @@ if __name__ == "__main__":
     NUM_NODES, NUM_FEAT, train_loader, test_loader = make_data()
     epoches = 1000
     print(f"make_data ok!!!, epoches = {epoches}")
-    for i in [("GCN_GCN", GCNConv, GCNConv, True), ("GAT_GAT", GATConv, GATConv, True),
-              ("GCN_GAT", GCNConv, GATConv, True), ("GAT_GCN", GATConv, GCNConv, True)]:
+    for i in [
+        ("EGCN_EGCN", EvolveGCNO, EvolveGCNO, True)]:
 
+        print(i[0])
         tag, conv1, conv2, useskip = i
-        useskipway = [True, False]
-        for useskip in useskipway:
-            tag = tag + "_skip" + str(useskip)
-            print(tag)
-            model = GCN2layer(NUM_FEAT, [100], conv1, conv2, use_skip=useskip)
-            model.to(device)
-            lossf = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.9, 0.1]).to(device))
-            tain_model(train_loader, test_loader, model, lossf, epoches=epoches, tag=tag)
-            torch.save(model.state_dict(), f'model_{tag}.pkl')
+        tag = tag + "_skip" + str(useskip)
+        model = EGCNO(NUM_FEAT, 2)
+        model.to(device)
+        lossf = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.9, 0.1]).to(device))
+        tain_model(train_loader, test_loader, model, lossf, epoches=epoches, tag=tag)
+        torch.save(model.state_dict(), f'model_{tag}.pkl')
         # break
         # 加载
         # model = torch.load(f'\model_{tag}.pkl')
         # model.load_state_dict(torch.load('\parameter.pkl'))
-
